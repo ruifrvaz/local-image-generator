@@ -177,8 +177,9 @@ if [ -z "$PROMPT" ]; then
     fi
     
     # Parse file for positive: and negative: entries
-    PROMPT=$(grep -i '^positive:' "$SELECTED_FILE" | sed 's/^positive://I' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-    FILE_NEGATIVE=$(grep -i '^negative:' "$SELECTED_FILE" | sed 's/^negative://I' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+    # Note: || true prevents set -e from exiting when grep finds no match
+    PROMPT=$(grep -i '^positive:' "$SELECTED_FILE" 2>/dev/null | sed 's/^positive://I' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//' || true)
+    FILE_NEGATIVE=$(grep -i '^negative:' "$SELECTED_FILE" 2>/dev/null | sed 's/^negative://I' | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//' || true)
     
     # If no structured format found, treat entire file as positive prompt (legacy support)
     if [ -z "$PROMPT" ]; then
