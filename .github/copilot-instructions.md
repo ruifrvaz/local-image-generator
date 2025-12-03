@@ -43,45 +43,88 @@
 - Health checks for validation
 - Real-time monitoring (GPU, VRAM, queue status)
 
-## Starting or resuming chats
+## Session Commands
 
-To ensure continuity across chat sessions, **When user starts new chat with "analyze" or "recap":**
-- **Always start by read all readme files available** in the directory structure
-- **Always read the latest history file first** (`history/` sorted by date)
-- **Always scan the tasks folder to see if there are any open tasks**
-- Use all this content to understand recent changes and decisions then proceed with standard analysis and suggestions
+Explicit keywords for session management. These are unambiguous commands.
 
+### `session.recap`
 
-## Finalizing chats
+Start a new chat with full project context. Execute these steps IN ORDER:
 
-**When user says "wrap up" or "summarize":**
-- **Create history file if session qualifies as significant** (see Documentation Philosophy)
-- Filename: `docs/history/YYYY-MM-DD_description.md`
-- Include: Actions taken, problems solved, decisions made, files modified, next steps
-- Focus on **what** and **why**, not implementation details
-- Update this history file as the session reference for next chat
+1. **Read core files** (in parallel):
+   - `README.md` (project root)
+   - `QUICKSTART.md`
+   - `docs/CONTROLNET.md` (if exists)
+
+2. **Read the 3 most recent history files** from `docs/history/` (sorted by date descending)
+
+3. **Read task planning file:** `tasks/PLANNING.md` (NOT individual task files)
+
+4. **Synthesize and present** a recap covering:
+   - Current project state (from READMEs)
+   - Recent changes and decisions (from history)
+   - Open tasks sorted by priority
+   - Suggested next steps
+
+**Note:** Only read individual task files (`tasks/NNN_*.md`) when actively working on that specific task.
+
+### `session.wrap`
+
+End a session by documenting the **entire session** (not just recent activity):
+
+1. **Review full conversation** - All topics discussed, decisions made, files modified
+2. **Create history file** if session qualifies as significant (see Documentation Philosophy)
+   - Filename: `docs/history/YYYY-MM-DD_description.md`
+   - Include: Actions taken, problems solved, decisions made, files modified, next steps
+   - Focus on **what** and **why**, not implementation details
+   - Cover the **complete session arc**, not just the last activity
+3. **Update this history file** as the session reference for next chat
 - **Do NOT create** separate RESUME or TODO files (history file serves this purpose)
 
+## Task Commands
 
-## Task Management
+Explicit keywords for task management. These are unambiguous commands.
 
-**When user types "create task - [title]":**
-- Create new task file in `tasks/` directory
-- Filename: `tasks/NNN_task_title.md` (NNN = next available number, zero-padded to 3 digits)
-- Include: Title, priority (1-5, where 1=highest), description, acceptance criteria
-- Tasks are numbered sequentially starting at 005 (001-004 reserved for main scifi-llm project)
+**Central planning file:** `tasks/PLANNING.md`
+- Contains status of all tasks (sorted by ID)
+- Single source of truth for task overview
+- Update this file when task status changes
 
-**When user types "what's next" or asks about tasks:**
-- Read all task files in `tasks/` directory
-- Show as many tasks as the user asks sorted by priority (1 first) then by number
-- Display: number, title, priority
-- Limit to top 5-10 tasks unless user requests more
+### `task.create [title]` or `task.create [title] - [description] - [criteria]`
+
+Create a new task:
+
+1. Create new task file in `tasks/` directory
+2. Filename: `tasks/NNN_task_title.md` (NNN = next available number, zero-padded to 3 digits)
+3. Tasks are numbered sequentially starting at 001
+4. **Add entry to `tasks/PLANNING.md`** with status "Not Started"
+
+**Flexible input formats:**
+- `task.create [title]` - Title only (prompt for details or infer from context)
+- `task.create [title] - [description]` - Title + description
+- `task.create [title] - [description] - [criteria]` - Full specification
+
+### `task.list`
+
+Show current tasks:
+
+1. Read `tasks/PLANNING.md` only (not individual task files)
+2. Show tasks that are not completed, sorted by priority
+
+### `task.complete [id]`
+
+Mark a task as done:
+
+1. Read the task file to review acceptance criteria
+2. **Verify all criteria are met** - Do NOT complete if any criteria remain unfinished
+3. Check off completed acceptance criteria (`- [x]`)
+4. Update status to "Completed" and add completion date in `PLANNING.md`
+5. Update individual task file status to "Completed"
 
 **Task file format:**
 ```markdown
 # [Task Title]
 
-**Priority:** [1-5]  
 **Status:** Not Started | In Progress | Completed | Blocked  
 **Created:** YYYY-MM-DD
 
