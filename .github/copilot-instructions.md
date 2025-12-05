@@ -222,7 +222,6 @@ RTX 5090 GPU (32GB VRAM)
   - KV Cache & Processing
        ↓
 Generated Images
-  - outputs/YYYYMMDD_HHMMSS/
   - PNG files + prompt.txt metadata
 ```
 
@@ -232,13 +231,13 @@ Generated Images
 - `stop_comfyui.sh` - Graceful shutdown with resource cleanup
 - `monitoring/monitor_comfyui.sh` - Real-time GPU/VRAM/power/temperature/queue monitor
 - `scripts/generate.sh` - Bash API wrapper for CLI generation (reads prompts from files)
-- `prompts/` - Text files with generation prompts (latest file auto-detected)
+- `~/images/prompts/` - Text files with generation prompts (latest file auto-detected)
 - `workflows/presets/` - ComfyUI workflow JSONs (txt2img_basic, txt2img_lora, img2img, upscale)
 - `setup/` - One-time installation scripts (0-7 numbered sequence)
 - `monitoring/` - GPU and performance monitoring scripts
 - `health_checks/` - Validation tools (9-10, TODO)
 - `models/` - User's .safetensors files (base + LoRA, no naming convention)
-- `outputs/` - Generated images organized by timestamp
+- `~/images/outputs/` - Generated images organized by timestamp
 
 **Key Technical Constraints:**
 - RTX 5090 requires PyTorch 2.8.0+ with CUDA 12.8+ (sm_120 support)
@@ -265,7 +264,7 @@ cd ~/image-gen
 ./monitoring/monitor_comfyui.sh
 
 # Create prompt file (latest file auto-detected)
-echo "your prompt text here" > prompts/002_my_prompt.txt
+echo "your prompt text here" > ~/images/prompts/002_my_prompt.txt
 
 # Generate image (reads latest prompt file automatically)
 ./scripts/generate.sh --model "base_sdxl.safetensors"
@@ -318,7 +317,7 @@ cp ~/Downloads/*.safetensors ~/image-gen/models/
 
 ### Workflow Parameter Injection
 **generate.sh workflow:**
-1. Load prompt from latest `.txt` file in `prompts/` (or use `--prompt` flag)
+1. Load prompt from latest `.txt` file in `~/images/prompts/` (or use `--prompt` flag)
 2. Load workflow JSON from presets or custom path
 3. Use `jq` to substitute parameters:
    - `.["1"].inputs.ckpt_name = $MODEL` (with "user_models/" prefix)
@@ -328,7 +327,7 @@ cp ~/Downloads/*.safetensors ~/image-gen/models/
    - `.["5"].inputs.cfg = $CFG` (default: 7.0)
 4. POST modified JSON to `/prompt` endpoint
 5. Poll `/history/{prompt_id}` for completion
-6. Download from `/view?filename=` to `outputs/YYYYMMDD_HHMMSS/`
+6. Download from `/view?filename=` to `~/images/outputs/YYYYMMDD_HHMMSS/`
    - `.["5"].inputs.steps = $STEPS`
    - `.["5"].inputs.cfg = $CFG`
 3. POST modified JSON to `/prompt` endpoint
@@ -364,7 +363,7 @@ cp ~/Downloads/*.safetensors ~/image-gen/models/
 - Focus on what and why, not how
 
 **Output organization:**
-- Timestamped directories: `outputs/YYYYMMDD_HHMMSS/`
+- Timestamped directories: `~/images/outputs/YYYYMMDD_HHMMSS/`
 - Each generation includes: `image.png` + `prompt.txt` metadata
 - Server logs: `logs/server_YYYYMMDD_HHMMSS.log`
 
@@ -372,7 +371,8 @@ cp ~/Downloads/*.safetensors ~/image-gen/models/
 
 ```
 image-gen/
-├── SESSION_SUMMARY.md                # Progress tracking (update each session)
+├── README.md                         # Project overview
+├── QUICKSTART.md                     # Setup and first generation guide
 ├── serve_comfyui.sh                  # Server launcher
 ├── stop_comfyui.sh                   # Graceful shutdown
 ├── .github/
@@ -386,9 +386,8 @@ image-gen/
 │   ├── 5_install_comfyui.sh
 │   └── 6_env_export.sh
 ├── scripts/                          # Utilities
-│   └── generate.sh                   # CLI generation wrapper
-├── prompts/                          # Text files with prompts
-│   └── NNN_description.txt           # Latest file auto-loaded
+│   ├── generate.sh                   # CLI generation wrapper
+│   └── collect_images.sh             # Gather images into single folder
 ├── workflows/                        # ComfyUI workflow JSONs
 │   └── presets/
 │       ├── txt2img_basic.json
@@ -401,15 +400,18 @@ image-gen/
 │   ├── 9_health.sh
 │   └── 10_generation_test.sh
 ├── models/                           # User's .safetensors files
-├── outputs/                          # Generated images (auto-organized)
 ├── logs/                             # Server logs (auto-generated)
-├── benchmarks/                       # Performance testing (future)
 ├── tasks/                            # Task tracking
-└── docs/                             # Documentation (TODO)
-    ├── README.md
-    ├── IMAGE_GEN_SETUP.md
-    ├── QUICK_START.md
-    └── COMFYUI_API_REFERENCE.md
+│   └── PLANNING.md                   # Central task planning file
+└── docs/                             # Documentation
+    ├── CONTROLNET.md
+    └── history/                      # Session history files
+
+~/images/                             # Content directory (outside project)
+├── prompts/                          # Text files with prompts
+│   └── NNN_description.txt           # Latest file auto-loaded
+└── outputs/                          # Generated images (auto-organized)
+    └── YYYYMMDD_HHMMSS/              # Timestamped folders
 ```
 
 ## Documentation

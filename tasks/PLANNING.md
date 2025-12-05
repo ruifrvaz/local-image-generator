@@ -4,22 +4,22 @@ Central planning file for all project tasks. Single source of truth for task sta
 
 ## Active Tasks
 
-| ID  | Title                        | Priority | Status      | Created    |
-|-----|------------------------------|----------|-------------|------------|
-| 005 | Sequence Generation Script   | 1        | Not Started | 2025-12-02 |
+| ID  | Title                              | Priority | Status      | Created    |
+|-----|------------------------------------|----------|-------------|------------|
+| 009 | Sequence Scene Producer Agent      | 1        | Not Started | 2025-12-04 |
 
 ## Completed Tasks
 
-| ID  | Title | Completed |
-|-----|-------|-----------|
-| -   | -     | -         |
+| ID  | Title                              | Completed  |
+|-----|------------------------------------|------------|
+| 008 | Scene Producer Copilot Agent       | 2025-12-04 |
+| 007 | Add Execution Count Option         | 2025-12-03 |
+| 005 | Sequence Generation Script         | 2025-12-03 |
+| 006 | Move Prompt/Output Outside Project | 2025-12-03 |
 
 ## Backlog
 
 Ideas and future enhancements not yet formalized as tasks:
 
-- Health check scripts (9_health.sh, 10_generation_test.sh)
 - ControlNet integration (see docs/CONTROLNET.md)
-- Batch generation with parameter sweeps
-- Model comparison tool
 - Prompt template system
