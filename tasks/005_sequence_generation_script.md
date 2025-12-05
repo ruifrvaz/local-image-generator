@@ -1,8 +1,9 @@
 # Sequence Generation Script
 
 **Priority:** 1  
-**Status:** Not Started  
-**Created:** 2025-12-02
+**Status:** Completed  
+**Created:** 2025-12-02  
+**Completed:** 2025-12-03
 
 ## Description
 
@@ -12,14 +13,24 @@ Create a script that processes multiple prompt files in sequence to generate a s
 
 ## Acceptance Criteria
 
-- [ ] Script reads multiple prompt files from a designated folder or accepts a list of files
-- [ ] Processes prompts in order (sorted by filename or explicit ordering)
-- [ ] Generates images sequentially, saving to a single timestamped "sequence" folder
-- [ ] Each output includes frame number and original prompt filename
-- [ ] Supports shared parameters across sequence (model, seed base, style consistency)
-- [ ] Optional: seed incrementing or fixed seed for style consistency
-- [ ] Optional: shared negative prompt or style prefix applied to all frames
-- [ ] Outputs a manifest/index file listing all frames with their prompts
+- [x] Script reads multiple prompt files from a designated folder or accepts a list of files
+- [x] Processes prompts in order (sorted by filename or explicit ordering)
+- [x] Generates images sequentially, saving to a single timestamped "sequence" folder
+- [x] Each output includes frame number and original prompt filename
+- [x] Supports shared parameters across sequence (model, seed base, style consistency)
+- [x] Optional: seed incrementing or fixed seed for style consistency
+- [x] Optional: shared negative prompt or style prefix applied to all frames
+- [x] Outputs a manifest/index file listing all frames with their prompts
+
+## Implementation Notes
+
+- Script: `scripts/generate_sequence.sh`
+- Calls ComfyUI API directly (no `generate.sh` wrapper)
+- Supports `--dry-run` to preview sequence without generating
+- Supports `--prefix`, `--suffix` for style consistency
+- Supports `--fixed-seed` for same seed across all frames
+- Sequence prompts: `~/images/prompts/sequences/<name>/NNN_scene.txt`
+- Output: `~/images/outputs/sequences/YYYYMMDD_HHMMSS_<name>/frame_NNN.png`
 
 ## Notes
 
