@@ -14,7 +14,7 @@ set -euo pipefail
 #   --model MODEL          Model path relative to models/ (supports subfolders)
 #
 # Optional:
-#   --prompt-file FILE     Read prompt from text file (default: latest in prompts/)
+#   --prompt-file FILE     Read prompt from text file (default: latest in ~/images/prompts/)
 #                          File format: "positive: <text>" and "negative: <text>" on separate lines
 #                          Legacy format (plain text) also supported
 #   --prompt TEXT          Generation prompt (overrides --prompt-file)
@@ -26,7 +26,8 @@ set -euo pipefail
 #   --seed N               Random seed (default: random)
 #   --width N              Image width (default: 1024)
 #   --height N             Image height (default: 1024)
-#   --output DIR           Output directory (default: outputs/YYYYMMDD_HHMMSS/)
+#   --output DIR           Output directory (default: ~/images/outputs/YYYYMMDD_HHMMSS/)
+#   --count N              Number of images to generate (default: 1, uses different seeds)
 #
 # Requirements:
 #   - ComfyUI server running on http://localhost:8188
@@ -54,16 +55,20 @@ LORA=""
 STEPS=20
 CFG=5.0
 SEED=$RANDOM
+SEED_SPECIFIED=false
 WIDTH=1024
 HEIGHT=1024
 OUTPUT=""
 MODEL=""
+COUNT=1
 COMFYUI_URL="http://localhost:8188"
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-PROMPTS_DIR="$PROJECT_DIR/prompts"
+IMAGES_DIR="$HOME/images"
+PROMPTS_DIR="$IMAGES_DIR/prompts"
+OUTPUTS_DIR="$IMAGES_DIR/outputs"
 
 ################################################################################
 # Parse arguments
@@ -105,10 +110,15 @@ while [[ $# -gt 0 ]]; do
             ;;
         --seed)
             SEED="$2"
+            SEED_SPECIFIED=true
             shift 2
             ;;
         --width)
             WIDTH="$2"
+            shift 2
+            ;;
+        --count)
+            COUNT="$2"
             shift 2
             ;;
         --height)
@@ -253,7 +263,7 @@ MODEL="user_models/$MODEL"
 # Set output directory with timestamp if not specified
 if [ -z "$OUTPUT" ]; then
     TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
-    OUTPUT="$PROJECT_DIR/outputs/$TIMESTAMP"
+    OUTPUT="$OUTPUTS_DIR/$TIMESTAMP"
 fi
 
 # Create output directory
@@ -278,6 +288,9 @@ if [ -n "$LORA" ]; then
 fi
 echo "Workflow: $(basename "$WORKFLOW")"
 echo "Output:   $OUTPUT"
+if [ "$COUNT" -gt 1 ]; then
+    echo "Count:    $COUNT"
+fi
 echo ""
 
 # Load workflow JSON
@@ -286,18 +299,39 @@ WORKFLOW_JSON=$(cat "$WORKFLOW")
 # Detect workflow type by checking if Node 2 is LoraLoader or CLIPTextEncode
 IS_LORA_WORKFLOW=$(echo "$WORKFLOW_JSON" | jq -r '.["2"].class_type // ""')
 
-echo "[BUILD] Preparing workflow with parameters..."
+# Store base seed for multi-generation
+BASE_SEED=$SEED
+
+################################################################################
+# Generation loop
+################################################################################
+
+for ((GEN_NUM=1; GEN_NUM<=COUNT; GEN_NUM++)); do
+
+# Calculate seed for this iteration
+if [ "$SEED_SPECIFIED" = true ]; then
+    CURRENT_SEED=$((BASE_SEED + GEN_NUM - 1))
+else
+    CURRENT_SEED=$RANDOM
+fi
+
+# Set output filenames based on count
+if [ "$COUNT" -eq 1 ]; then
+    IMAGE_FILE="$OUTPUT/image.png"
+    METADATA_FILE="$OUTPUT/prompt.txt"
+else
+    IMAGE_FILE="$OUTPUT/image_$(printf '%03d' $GEN_NUM).png"
+    METADATA_FILE="$OUTPUT/prompt_$(printf '%03d' $GEN_NUM).txt"
+fi
+
+if [ "$COUNT" -gt 1 ]; then
+    echo "[${GEN_NUM}/${COUNT}] Generating with seed $CURRENT_SEED..."
+else
+    echo "[BUILD] Preparing workflow with parameters..."
+fi
 
 if [ "$IS_LORA_WORKFLOW" = "LoraLoader" ]; then
     # LoRA workflow: txt2img_lora.json structure
-    #   Node 1: CheckpointLoaderSimple (model)
-    #   Node 2: LoraLoader (lora)
-    #   Node 3: CLIPTextEncode (positive prompt)
-    #   Node 4: CLIPTextEncode (negative prompt)
-    #   Node 5: EmptyLatentImage (width, height)
-    #   Node 6: KSampler (steps, cfg, seed)
-    
-    # Prepend 'user_models/' to LoRA path for ComfyUI
     LORA_PATH="user_models/$LORA"
     
     MODIFIED_WORKFLOW=$(echo "$WORKFLOW_JSON" | jq \
@@ -307,7 +341,7 @@ if [ "$IS_LORA_WORKFLOW" = "LoraLoader" ]; then
         --arg negative "$NEGATIVE" \
         --argjson steps "$STEPS" \
         --argjson cfg "$CFG" \
-        --argjson seed "$SEED" \
+        --argjson seed "$CURRENT_SEED" \
         --argjson width "$WIDTH" \
         --argjson height "$HEIGHT" '
         .["1"].inputs.ckpt_name = $model |
@@ -322,19 +356,13 @@ if [ "$IS_LORA_WORKFLOW" = "LoraLoader" ]; then
     ')
 else
     # Basic workflow: txt2img_basic.json structure
-    #   Node 1: CheckpointLoaderSimple (model)
-    #   Node 2: CLIPTextEncode (positive prompt)
-    #   Node 3: CLIPTextEncode (negative prompt)
-    #   Node 4: EmptyLatentImage (width, height)
-    #   Node 5: KSampler (steps, cfg, seed)
-    
     MODIFIED_WORKFLOW=$(echo "$WORKFLOW_JSON" | jq \
         --arg model "$MODEL" \
         --arg prompt "$PROMPT" \
         --arg negative "$NEGATIVE" \
         --argjson steps "$STEPS" \
         --argjson cfg "$CFG" \
-        --argjson seed "$SEED" \
+        --argjson seed "$CURRENT_SEED" \
         --argjson width "$WIDTH" \
         --argjson height "$HEIGHT" '
         if .["1"] then .["1"].inputs.ckpt_name = $model else . end |
@@ -352,16 +380,11 @@ else
     ')
 fi
 
-echo "[OK] Workflow prepared"
-echo ""
-
 # Submit to ComfyUI
-echo "[SUBMIT] Posting generation request to ComfyUI..."
 RESPONSE=$(curl -s -X POST "$COMFYUI_URL/prompt" \
     -H "Content-Type: application/json" \
     -d "{\"prompt\": $MODIFIED_WORKFLOW}")
 
-# Extract prompt_id
 PROMPT_ID=$(echo "$RESPONSE" | jq -r '.prompt_id')
 
 if [ -z "$PROMPT_ID" ] || [ "$PROMPT_ID" = "null" ]; then
@@ -370,11 +393,7 @@ if [ -z "$PROMPT_ID" ] || [ "$PROMPT_ID" = "null" ]; then
     exit 1
 fi
 
-echo "[OK] Request submitted: $PROMPT_ID"
-echo ""
-
 # Poll for completion
-echo "[WAIT] Generating image..."
 COMPLETED=false
 POLL_INTERVAL=2
 MAX_WAIT=300  # 5 minutes
@@ -393,7 +412,6 @@ while [ "$COMPLETED" = false ] && [ $ELAPSED -lt $MAX_WAIT ]; do
         
         if [ "$STATUS" = "true" ]; then
             COMPLETED=true
-            echo "[OK] Generation complete!"
             
             # Extract output filenames
             OUTPUTS=$(echo "$HISTORY" | jq -r ".\"$PROMPT_ID\".outputs")
@@ -402,51 +420,60 @@ while [ "$COMPLETED" = false ] && [ $ELAPSED -lt $MAX_WAIT ]; do
             FILENAMES=$(echo "$OUTPUTS" | jq -r '.[].images[]?.filename' | head -1)
             
             if [ -n "$FILENAMES" ]; then
-                echo ""
-                echo "[DOWNLOAD] Retrieving generated image..."
-                
                 # Download image
-                IMAGE_FILE="$OUTPUT/image.png"
                 curl -s "$COMFYUI_URL/view?filename=$FILENAMES" -o "$IMAGE_FILE"
                 
-                echo "[OK] Image saved: $IMAGE_FILE"
+                if [ "$COUNT" -gt 1 ]; then
+                    echo "[OK] Saved: $(basename "$IMAGE_FILE") (seed: $CURRENT_SEED)"
+                else
+                    echo "[OK] Image saved: $IMAGE_FILE"
+                fi
                 
                 # Save metadata
-                METADATA_FILE="$OUTPUT/prompt.txt"
                 cat > "$METADATA_FILE" <<EOF
 Model: $MODEL
 Prompt: $PROMPT
 Negative: $NEGATIVE
 Steps: $STEPS
 CFG: $CFG
-Seed: $SEED
+Seed: $CURRENT_SEED
 Size: ${WIDTH}x${HEIGHT}
 Workflow: $(basename "$WORKFLOW")
 Generated: $(date '+%Y-%m-%d %H:%M:%S')
 EOF
-                echo "[OK] Metadata saved: $METADATA_FILE"
+                if [ "$COUNT" -eq 1 ]; then
+                    echo "[OK] Metadata saved: $METADATA_FILE"
+                fi
             else
                 echo "[WARN] No output files found in response"
             fi
         fi
     fi
     
-    # Print progress indicator
-    if [ "$COMPLETED" = false ]; then
+    # Print progress indicator (only for single image)
+    if [ "$COMPLETED" = false ] && [ "$COUNT" -eq 1 ]; then
         printf "."
     fi
 done
-
-echo ""
 
 if [ "$COMPLETED" = false ]; then
     echo "[ERROR] Generation timed out after ${MAX_WAIT}s"
     exit 1
 fi
 
+done  # End generation loop
+
+################################################################################
+# Summary
+################################################################################
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "[SUCCESS] Image generation complete!"
+if [ "$COUNT" -gt 1 ]; then
+    echo "[SUCCESS] Generated $COUNT images!"
+else
+    echo "[SUCCESS] Image generation complete!"
+fi
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Output: $OUTPUT"
 echo ""

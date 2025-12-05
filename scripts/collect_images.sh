@@ -10,7 +10,7 @@ set -euo pipefail
 #   ./collect_images.sh [OPTIONS]
 #
 # Optional:
-#   --output DIR     Output directory (default: outputs/images/)
+#   --output DIR     Output directory (default: ~/images/outputs/collected/)
 #   --dry-run        Show what would be done without copying
 #   -h, --help       Show this help
 #
@@ -21,8 +21,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-OUTPUTS_DIR="$PROJECT_DIR/outputs"
-IMAGES_DIR="$OUTPUTS_DIR/images"
+OUTPUTS_DIR="$HOME/images/outputs"
+IMAGES_DIR="$OUTPUTS_DIR/collected"
 DRY_RUN=false
 
 ################################################################################
