@@ -48,8 +48,8 @@
     "5": {
         "inputs": {
             "seed": 42,
-            "steps": 30,
-            "cfg": 7.0,
+            "steps": 15,
+            "cfg": 6.0,
             "sampler_name": "euler",
             "scheduler": "normal",
             "denoise": 1.0,
