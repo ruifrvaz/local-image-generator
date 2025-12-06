@@ -67,8 +67,8 @@
     "6": {
         "inputs": {
             "seed": 42,
-            "steps": 30,
-            "cfg": 7.0,
+            "steps": 25,
+            "cfg": 5.5,
             "sampler_name": "euler",
             "scheduler": "normal",
             "denoise": 1.0,

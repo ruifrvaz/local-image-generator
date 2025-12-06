@@ -45,6 +45,19 @@
             "title": "Empty Latent Image"
         }
     },
+    "8": {
+        "inputs": {
+            "model": [
+                "1",
+                0
+            ],
+            "scale": 1.0
+        },
+        "class_type": "PerturbedAttentionGuidance",
+        "_meta": {
+            "title": "PAG (Perturbed Attention Guidance)"
+        }
+    },
     "5": {
         "inputs": {
             "seed": 42,
@@ -54,7 +67,7 @@
             "scheduler": "normal",
             "denoise": 1.0,
             "model": [
-                "1",
+                "8",
                 0
             ],
             "positive": [
