@@ -1,0 +1,48 @@
+# License
+
+This project is provided as-is for educational and local image generation purposes. Please review individual component licenses:
+
+## Project Components
+
+### ComfyUI
+- **License:** GPL-3.0
+- **Source:** https://github.com/comfyanonymous/ComfyUI
+- ComfyUI is licensed under the GNU General Public License v3.0
+
+### PyTorch
+- **License:** BSD-3-Clause
+- **Source:** https://github.com/pytorch/pytorch
+- PyTorch is licensed under the BSD 3-Clause License
+
+### CUDA Toolkit
+- **License:** NVIDIA CUDA Toolkit EULA
+- **Source:** https://developer.nvidia.com/cuda-toolkit
+- Subject to NVIDIA's End User License Agreement
+
+### Python Dependencies
+This project uses various Python packages, each with their own licenses:
+- `torchvision` - BSD-3-Clause
+- `Pillow` - HPND License
+- `safetensors` - Apache-2.0
+- `accelerate` - Apache-2.0
+- `einops` - MIT
+- `kornia` - Apache-2.0
+
+## Model Licenses
+
+Users are responsible for ensuring compliance with the licenses of any AI models they download and use with this project. Common model licenses include:
+
+- **SDXL Base Model** - CreativeML Open RAIL++-M License
+- **Community Models** - Various (check individual model cards on Hugging Face)
+
+## User Responsibility
+
+Users must:
+1. Comply with all applicable software licenses
+2. Review and accept model licenses before downloading
+3. Use generated content in accordance with model license terms
+4. Respect copyright and intellectual property rights
+
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind, express or implied. The authors are not responsible for any misuse or violation of third-party licenses.
