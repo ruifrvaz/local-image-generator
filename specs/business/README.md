@@ -17,9 +17,10 @@ Generated business-layer specifications documenting the existing image-gen syste
 | UC3-SEQUENCE | Sequence Generation | `uc3-sequence-generation.md` | ✅ Implemented | 2025-12-03 | 21 criteria (1 untestable) |
 | UC4-SERVER-MGMT | Server Management | `uc4-server-management.md` | ✅ Implemented | 2025-11-27 | 20 criteria |
 | UC5-MODEL-MGMT | Model Management | `uc5-model-management.md` | ✅ Implemented | 2025-11-27 | 20 criteria |
+| UC6-FRONTEND-UI | Frontend User Interface | `uc6-frontend-ui.md` | 📋 Draft | Not Implemented | 31 criteria (1 untestable) |
 
-**Total:** 5 use cases, 96 acceptance criteria (95 testable, 1 flagged as untestable)  
-**All specifications document existing implemented functionality.**
+**Total:** 6 use cases, 127 acceptance criteria (125 testable, 2 flagged as untestable)  
+**UC1-UC5 document existing implemented functionality. UC6 specifies new frontend requirement.**
 
 ## Actors Identified
 
@@ -28,7 +29,9 @@ Generated business-layer specifications documenting the existing image-gen syste
 3. **Model Curator** - Organizes SDXL and LoRA model collections
 4. **Performance Optimizer** - Monitors efficiency and resource usage
 5. **Sequence Creator** - Generates multi-frame visual narratives
-6. **System** - ComfyUI server and generation pipeline
+6. **Story Creator** - Creates multi-frame narrative sequences via UI (UC6)
+7. **Gallery Viewer** - Reviews and browses previously generated content (UC6)
+8. **System** - ComfyUI server and generation pipeline
 
 ## Success Metrics Captured
 
@@ -63,19 +66,23 @@ Each acceptance criterion uses format: `BUS-[CONCEPT]-[NNN]`
 
 | Concept | Criteria Count | Examples |
 |---------|----------------|----------|
-| SINGLE-IMG | 20 | BUS-SINGLE-IMG-001 to BUS-SINGLE-IMG-020 |
-| BATCH-IMG | 15 | BUS-BATCH-IMG-001 to BUS-BATCH-IMG-015 |
 | SEQUENCE | 21 | BUS-SEQUENCE-001 to BUS-SEQUENCE-021 |
 | SERVER-MGMT | 20 | BUS-SERVER-MGMT-001 to BUS-SERVER-MGMT-020 |
 | MODEL-MGMT | 20 | BUS-MODEL-MGMT-001 to BUS-MODEL-MGMT-020 |
-
+| FRONTEND-UI | 31 | BUS-FRONTEND-UI-001 to BUS-FRONTEND-UI-031 |
+| SERVER-MGMT | 20 | BUS-SERVER-MGMT-001 to BUS-SERVER-MGMT-020 |
+| MODEL-MGMT | 20 | BUS-MODEL-MGMT-001 to BUS-MODEL-MGMT-020 |
 ## Next Steps
 
 **Immediate:**
-- All business specs complete ✅
+- UC6-FRONTEND-UI specification complete ✅
+- Ready for functional specification phase
 - No blocking issues or conflicts
 
 **Recommended Next Phase:**
+Create functional specifications with `/smaqit.functional` to translate business requirements into behavioral specifications:
+- UC6: UI component structure, API contracts, state management
+- UC1-UC5: Backend workflows, data formats, error handling (if detailed specs needed)
 Create functional specifications with `/smaqit.functional` to translate business requirements into behavioral specifications (workflows, API contracts, data formats, user flows).
 
 **Functional Layer Will Define:**
@@ -84,26 +91,27 @@ Create functional specifications with `/smaqit.functional` to translate business
 - Prompt file parsing rules
 - Metadata file format
 - File naming conventions
-- Error handling behaviors
-- State transitions for generation pipeline
-
 ## Files Modified
 
-- `.github/prompts/smaqit.business.prompt.md` - Populated with actors, use cases, metrics, goals, constraints
-- `specs/business/uc1-single-image-generation.md` - NEW
-- `specs/business/uc2-batch-image-generation.md` - NEW
-- `specs/business/uc3-sequence-generation.md` - NEW
-- `specs/business/uc4-server-management.md` - NEW
-- `specs/business/uc5-model-management.md` - NEW
-
+- `.github/prompts/smaqit.business.prompt.md` - Populated with requirements (retroactive + UC6)
+- `specs/business/uc1-single-image-generation.md` - NEW (retroactive)
+- `specs/business/uc2-batch-image-generation.md` - NEW (retroactive)
+- `specs/business/uc3-sequence-generation.md` - NEW (retroactive)
+- `specs/business/uc4-server-management.md` - NEW (retroactive)
+- `specs/business/uc5-model-management.md` - NEW (retroactive)
+- `specs/business/uc6-frontend-ui.md` - NEW (2026-02-01) - NEW
 ## Validation Status
 
 All specifications validated against completion criteria:
 - ✅ All template sections filled
 - ✅ All upstream references valid (N/A for Business layer)
-- ✅ All acceptance criteria testable (except 1 flagged)
+- ✅ All acceptance criteria testable (except 2 flagged as untestable)
 - ✅ Scope boundaries explicitly stated
 - ✅ No implementation details leaked
+- ✅ Use case IDs follow format
+- ✅ File names include use case IDs
+- ✅ Requirement IDs follow format
+- ✅ CONCEPT consistency maintaineded
 - ✅ Use case IDs follow format
 - ✅ File names include use case IDs
 - ✅ Requirement IDs follow format

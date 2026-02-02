@@ -9,19 +9,20 @@ agent: smaqit.development
 ## Parameters
 
 ### Build Options
-[Any build-time preferences?]
-
-<!-- Example: "Run in watch mode for hot reload" -->
-<!-- Example: "Skip unit tests for fast iteration" -->
+- Development mode with hot reload (Vite HMR for frontend, Uvicorn --reload for backend)
+- Install dependencies automatically via npm and pip
+- Generate minimal starter code following specifications
+- Focus on core functionality first (generation → gallery → sequence/batch)
 
 ### Output Preferences
-[How should output be displayed?]
-
-<!-- Example: "Verbose logging for debugging" -->
-<!-- Example: "Quiet mode - errors only" -->
+- Standard logging (not verbose, not quiet)
+- Console output for server startup confirmation
+- Error messages with stack traces for debugging
+- Success confirmations for key operations (install, build, run)
 
 ### Environment
-[Any environment-specific settings?]
-
-<!-- Example: "Use Docker for isolated build" -->
-<!-- Example: "Build for production (optimized)" -->
+- WSL2 Ubuntu 22.04+ (existing environment)
+- Development mode (not production build initially)
+- Create NEW Python virtual environment at ~/.venvs/frontend-backend (DO NOT reuse imggen to avoid conflicts)
+- Node.js 18+ for frontend tooling
+- All servers run on localhost (frontend: 5173, backend: 8000, ComfyUI: 8188)
