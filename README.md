@@ -7,6 +7,7 @@ This repository provides a complete setup for running Stable Diffusion XL (SDXL)
 ### Key Features
 
 - **Local Generation**: All processing on RTX 5090 (32GB VRAM)
+- **Web Frontend UI**: Modern React interface for generation and gallery browsing
 - **Prompt File System**: Store prompts in text files, auto-loads latest
 - **Multiple Workflows**: Basic, LoRA, img2img, upscale presets
 - **CLI & Web UI**: Bash script API wrapper + browser interface
@@ -54,6 +55,32 @@ wget https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/mai
 ```
 
 ## Daily Usage
+
+### Web Frontend (Recommended)
+
+```bash
+cd ~/image-gen
+
+# Terminal 1: Start ComfyUI server
+./serve_comfyui.sh
+
+# Terminal 2: Start backend API
+./serve_backend.sh
+
+# Terminal 3: Start frontend UI
+./serve_frontend.sh
+```
+
+Open browser: http://localhost:5173
+
+Features:
+- Generate images with live preview
+- Browse gallery with filters (date, keyword)
+- View generation parameters
+- Download and delete images
+- Batch generation support
+
+### Command Line
 
 ```bash
 cd ~/image-gen
@@ -114,8 +141,23 @@ Web UI: http://localhost:8188
 
 ```
 image-gen/
-├── serve_comfyui.sh          # Start server
+├── serve_comfyui.sh          # Start ComfyUI server (port 8188)
+├── serve_backend.sh          # Start API server (port 8000)
+├── serve_frontend.sh         # Start frontend UI (port 5173)
 ├── stop_comfyui.sh           # Stop server
+├── frontend/                 # React web UI
+│   ├── src/
+│   │   ├── components/       # UI components
+│   │   ├── pages/            # Route pages
+│   │   └── App.jsx           # Main app
+│   └── package.json
+├── backend/                  # FastAPI backend
+│   ├── app/
+│   │   ├── api/              # REST endpoints
+│   │   ├── models/           # Pydantic schemas
+│   │   └── services/         # Business logic
+│   ├── main.py               # FastAPI app
+│   └── requirements.txt
 ├── setup/                    # Installation (0-6)
 ├── scripts/
 │   ├── generate.sh           # CLI generation
