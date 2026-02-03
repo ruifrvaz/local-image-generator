@@ -9,7 +9,7 @@ from typing import List
 
 router = APIRouter()
 
-@router.get("/checkpoints", response_model=ModelList)
+@router.get("/models", response_model=ModelList)
 async def get_available_models():
     """
     FUN-MODEL-SELECT-001: Query ComfyUI for available models

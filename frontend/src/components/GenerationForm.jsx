@@ -8,7 +8,7 @@ import ModelSelector from './ModelSelector';
 import GeneratedImage from './GeneratedImage';
 import { Loader2 } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'http://172.31.243.212:8000/api';
 
 // FUN-GEN-REQUEST-002: Generation states
 const STATE = {
@@ -90,6 +90,8 @@ function GenerationForm() {
 
   // FUN-GEN-REQUEST-011: Poll generation status
   const pollGenerationStatus = async (reqId) => {
+    let isCompleted = false;
+    
     const pollInterval = setInterval(async () => {
       try {
         const response = await axios.get(`${API_BASE}/generate/status/${reqId}`);
@@ -101,15 +103,23 @@ function GenerationForm() {
           setGenerationState(STATE.PROCESSING);
         } else if (status === 'completed') {
           clearInterval(pollInterval);
+          isCompleted = true;
           setGenerationState(STATE.COMPLETED);
-          setGeneratedImage(image_url);
+          // Prepend backend base URL (without /api since image_url already includes it)
+          const backendBase = API_BASE.replace('/api', '');
+          const fullImageUrl = image_url.startsWith('http') 
+            ? image_url 
+            : `${backendBase}${image_url}`;
+          setGeneratedImage(fullImageUrl);
         } else if (status === 'error') {
           clearInterval(pollInterval);
+          isCompleted = true;
           setGenerationState(STATE.ERROR);
           setErrorMessage(error || 'Generation failed');
         }
       } catch (error) {
         clearInterval(pollInterval);
+        isCompleted = true;
         setGenerationState(STATE.ERROR);
         setErrorMessage('Failed to check generation status');
       }
@@ -118,7 +128,7 @@ function GenerationForm() {
     // Timeout after 5 minutes
     setTimeout(() => {
       clearInterval(pollInterval);
-      if (generationState !== STATE.COMPLETED) {
+      if (!isCompleted) {
         setGenerationState(STATE.ERROR);
         setErrorMessage('Generation timed out');
       }

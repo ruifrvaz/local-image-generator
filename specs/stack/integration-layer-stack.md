@@ -3,6 +3,7 @@ id: STK-INTEGRATION
 status: implemented
 created: 2026-02-01
 implemented: 2026-02-02T21:15:00Z
+updated: 2026-02-02
 prompt_version: initial
 ---
 
@@ -73,7 +74,8 @@ N/A (uses frameworks from STK-FRONTEND and STK-BACKEND)
 | Constraint | Description | Impact |
 |------------|-------------|--------|
 | Port allocation | Frontend: 5173, Backend: 8000, ComfyUI: 8188 | Clear separation, no conflicts |
-| WSL2 localhost forwarding | All ports accessible from Windows browser | Standard localhost URLs work |
+| WSL2 localhost forwarding | All ports accessible from Windows browser | Backend/frontend bind to 0.0.0.0; Windows forwards localhost:N → WSL:N automatically |
+| Windows host browser | User accesses UI from Windows, not WSL terminal browser | All services (frontend 5173, backend 8000, ComfyUI 8188) bind to 0.0.0.0 for Windows accessibility |
 | CORS requirement | Browser security requires CORS headers | Backend must configure CORS middleware |
 | Existing ComfyUI API | Must use ComfyUI HTTP API as-is | Backend proxies requests, no modifications |
 | Existing scene producer | Agent accessible as CLI tool | Backend invokes via subprocess or HTTP |
@@ -132,6 +134,11 @@ Requirements use format: `STK-INTEGRATION-[NNN]`
 - [x] STK-INTEGRATION-033: Frontend hot reload works during development (Vite HMR)
 - [x] STK-INTEGRATION-034: Backend hot reload works during development (Uvicorn --reload)
 - [x] STK-INTEGRATION-035: ComfyUI server must be started separately before frontend/backend
+
+**WSL Networking:**
+- [x] STK-INTEGRATION-036: Frontend binds to 0.0.0.0 (accessible from Windows)
+- [x] STK-INTEGRATION-037: Backend binds to 0.0.0.0 (accessible from Windows)
+- [x] STK-INTEGRATION-038: All services accessible via localhost from Windows browser
 
 ---
 

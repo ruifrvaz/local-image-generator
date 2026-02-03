@@ -3,6 +3,7 @@ id: STK-BACKEND
 status: implemented
 created: 2026-02-01
 implemented: 2026-02-02T21:15:00Z
+updated: 2026-02-02
 prompt_version: initial
 ---
 
@@ -80,7 +81,8 @@ prompt_version: initial
 | Constraint | Description | Impact |
 |------------|-------------|--------|
 | Python 3.12+ consistency | Match existing ComfyUI environment | Reuse ~/.venvs/imggen or create separate venv |
-| WSL2 Ubuntu 22.04+ | Backend runs on WSL2 | Standard Python deployment, no Windows-specific code |
+| WSL2 Ubuntu 22.04+ | Backend runs on WSL2, accessed from Windows browser | Standard Python deployment, bind to 0.0.0.0 for Windows localhost forwarding |
+| WSL2 networking | Windows host browser must reach WSL backend | Uvicorn binds to 0.0.0.0 (all interfaces), not 127.0.0.1 (localhost only) |
 | Coexist with ComfyUI | Backend cannot use port 8188 | Chose port 8000 for backend API |
 | Integrate with ComfyUI | Must call ComfyUI HTTP API | Used requests library for synchronous calls |
 | Single-user local | No auth, no multi-tenancy | Simplified security, no JWT or session management |

@@ -33,13 +33,13 @@ function Gallery({ images, loading, onDeleteImage }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {images.map((image) => (
           <div
-            key={image.id}
+            key={image.filepath}
             className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
           >
             {/* FUN-GALLERY-VIEW-004: Thumbnail display */}
             <div className="relative group">
               <img
-                src={image.thumbnail || `http://localhost:8000/api/gallery/image/${image.id}`}
+                src={`http://172.31.243.212:8000${image.thumbnail_url}`}
                 alt={image.prompt.substring(0, 50)}
                 className="w-full h-64 object-cover rounded-t-lg cursor-pointer"
                 onClick={() => setSelectedImage(image)}

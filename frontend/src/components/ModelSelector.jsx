@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronDown } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'http://172.31.243.212:8000/api';
 
 function ModelSelector({ selectedModel, onSelectModel, disabled }) {
   const [models, setModels] = useState({ base: [], lora: [], merged: [] });
@@ -20,7 +20,7 @@ function ModelSelector({ selectedModel, onSelectModel, disabled }) {
 
   const loadModels = async () => {
     try {
-      const response = await axios.get(`${API_BASE}/checkpoints`);
+      const response = await axios.get(`${API_BASE}/models`);
       setModels(response.data);
       
       // Auto-select first base model if available

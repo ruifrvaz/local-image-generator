@@ -38,6 +38,8 @@ async def generate_image(request: GenerationRequest):
     # FUN-GEN-REQUEST-008: Submit to ComfyUI
     result = comfyui_service.submit_generation(workflow)
     
+    print(f"[DEBUG] ComfyUI submit result: {result}")
+    
     if not result or "prompt_id" not in result:
         raise HTTPException(
             status_code=500,
@@ -46,6 +48,8 @@ async def generate_image(request: GenerationRequest):
     
     # FUN-GEN-REQUEST-009: Extract prompt_id
     request_id = result["prompt_id"]
+    
+    print(f"[DEBUG] Using request_id: {request_id}")
     
     # Store initial status
     generation_status[request_id] = {
@@ -68,11 +72,23 @@ async def get_generation_status(request_id: str):
     # FUN-GEN-REQUEST-011: Poll ComfyUI /history endpoint
     history = comfyui_service.get_generation_status(request_id)
     
+    print(f"[DEBUG] Polling status for: {request_id}")
+    print(f"[DEBUG] History response: {history}")
+    print(f"[DEBUG] Keys in history: {list(history.keys()) if history else 'None'}")
+    
+    # If not in history yet, it's still processing/queued
     if not history or request_id not in history:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Generation request {request_id} not found"
-        )
+        # Check if we know about this request_id
+        if request_id in generation_status:
+            return GenerationResponse(
+                request_id=request_id,
+                status="processing"
+            )
+        else:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Generation request {request_id} not found"
+            )
     
     status_data = history[request_id]
     
@@ -87,13 +103,13 @@ async def get_generation_status(request_id: str):
                     filename = node_outputs["images"][0]["filename"]
                     return GenerationResponse(
                         request_id=request_id,
-                        status="complete",
+                        status="completed",
                         image_url=f"/api/generate/image/{filename}"
                     )
         
         return GenerationResponse(
             request_id=request_id,
-            status="complete",
+            status="completed",
             error_message="Image generated but filename not found"
         )
     

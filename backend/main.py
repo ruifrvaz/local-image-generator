@@ -16,7 +16,10 @@ app = FastAPI(
 # STK-INTEGRATION-005: CORS middleware for frontend origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Frontend dev server
+    allow_origins=[
+        "http://localhost:5173",  # Frontend dev server (localhost)
+        "http://172.31.243.212:5173",  # Frontend dev server (WSL IP)
+    ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],

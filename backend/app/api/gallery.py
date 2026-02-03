@@ -42,11 +42,12 @@ async def load_gallery(
                 else:
                     metadata = {}
                 
-                # Build GalleryImage object
+                # Build GalleryImage object with API URLs
+                image_id = image_file.stem
                 image = GalleryImage(
-                    id=image_file.stem,
-                    filepath=str(image_file),
-                    thumbnail=str(image_file),  # TODO: Generate actual thumbnails
+                    id=image_id,
+                    image_url=f"/api/gallery/image/{image_id}",
+                    thumbnail_url=f"/api/gallery/image/{image_id}",  # Same for now, could optimize with actual thumbnails
                     prompt=metadata.get("prompt", ""),
                     model=metadata.get("model", "unknown"),
                     seed=metadata.get("seed", -1),

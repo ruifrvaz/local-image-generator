@@ -5,7 +5,7 @@
 import { X, Download, Trash2 } from 'lucide-react';
 
 function ImageModal({ image, onClose, onDelete }) {
-  const imageUrl = `http://localhost:8000/api/gallery/image/${image.id}`;
+  const imageUrl = `http://172.31.243.212:8000${image.image_url}`;
 
   const handleDelete = () => {
     if (confirm('Delete this image permanently?')) {

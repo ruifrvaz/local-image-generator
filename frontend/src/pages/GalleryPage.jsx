@@ -8,7 +8,7 @@ import GalleryFilters from '../components/GalleryFilters';
 import GalleryStatistics from '../components/GalleryStatistics';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'http://172.31.243.212:8000/api';
 
 function GalleryPage() {
   const [images, setImages] = useState([]);
@@ -35,9 +35,11 @@ function GalleryPage() {
       if (filters.keyword) params.keyword = filters.keyword;
 
       const response = await axios.get(`${API_BASE}/gallery`, { params });
-      setImages(response.data.images);
+      // Backend returns array directly, not wrapped in {images: [...]}
+      setImages(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Failed to load gallery:', error);
+      setImages([]); // Set empty array on error
     } finally {
       setLoading(false);
     }

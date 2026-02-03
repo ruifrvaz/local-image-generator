@@ -5,9 +5,12 @@ Traceability: STK-INTEGRATION-014 to STK-INTEGRATION-019, FUN-GEN-REQUEST
 """
 import requests
 import json
+import os
+import random
 from typing import Dict, Optional
 
 COMFYUI_BASE_URL = "http://localhost:8188"
+WORKFLOW_DIR = os.path.join(os.path.dirname(__file__), "../../..", "workflows/presets")
 
 class ComfyUIService:
     """Service for interacting with ComfyUI API"""
@@ -93,38 +96,25 @@ class ComfyUIService:
         """
         FUN-GEN-REQUEST-007: Construct workflow JSON with parameters
         """
-        # Basic workflow structure for txt2img
-        workflow = {
-            "1": {
-                "inputs": {
-                    "ckpt_name": f"user_models/{request_data['model']}"
-                },
-                "class_type": "CheckpointLoaderSimple"
-            },
-            "2": {
-                "inputs": {
-                    "text": request_data['prompt']
-                },
-                "class_type": "CLIPTextEncode"
-            },
-            "3": {
-                "inputs": {
-                    "text": request_data.get('negative_prompt', 'blurry, low quality')
-                },
-                "class_type": "CLIPTextEncode"
-            },
-            "5": {
-                "inputs": {
-                    "seed": request_data.get('seed', -1),
-                    "steps": request_data.get('steps', 20),
-                    "cfg": request_data.get('cfg', 7.0),
-                    "sampler_name": "euler",
-                    "scheduler": "normal",
-                    "denoise": 1.0
-                },
-                "class_type": "KSampler"
-            }
-        }
+        # Load workflow template
+        workflow_path = os.path.join(WORKFLOW_DIR, "txt2img_basic.json")
+        with open(workflow_path, 'r') as f:
+            workflow = json.load(f)
+        
+        # Update node parameters
+        workflow["1"]["inputs"]["ckpt_name"] = request_data['model']
+        workflow["2"]["inputs"]["text"] = request_data['prompt']
+        workflow["3"]["inputs"]["text"] = request_data.get('negative_prompt', 'blurry, low quality')
+        
+        # Handle seed: -1 means random, otherwise use provided seed
+        seed = request_data.get('seed', -1)
+        if seed == -1:
+            seed = random.randint(0, 2**32 - 1)
+        workflow["5"]["inputs"]["seed"] = seed
+        
+        workflow["5"]["inputs"]["steps"] = request_data.get('steps', 20)
+        workflow["5"]["inputs"]["cfg"] = request_data.get('cfg', 7.0)
+        
         return workflow
 
 comfyui_service = ComfyUIService()
