@@ -1,22 +1,23 @@
 """
 ComfyUI Integration Service
 Handles communication with ComfyUI server
-Traceability: STK-INTEGRATION-014 to STK-INTEGRATION-019, FUN-GEN-REQUEST
+Traceability: STK-INTEGRATION-014 to STK-INTEGRATION-019, FUN-GEN-REQUEST, STK-CONFIG
 """
 import requests
 import json
 import os
 import random
 from typing import Dict, Optional
+from app.config import settings
 
-COMFYUI_BASE_URL = "http://localhost:8188"
 WORKFLOW_DIR = os.path.join(os.path.dirname(__file__), "../../..", "workflows/presets")
 
 class ComfyUIService:
     """Service for interacting with ComfyUI API"""
     
     def __init__(self):
-        self.base_url = COMFYUI_BASE_URL
+        # STK-CONFIG-013: Configuration values replace hardcoded URLs
+        self.base_url = settings.comfyui_api_url
     
     def is_available(self) -> bool:
         """Check if ComfyUI server is running"""

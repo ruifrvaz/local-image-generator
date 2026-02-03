@@ -1,12 +1,14 @@
 /**
  * Model Selector Component
- * Traceability: FUN-MODEL-SELECT
+ * Traceability: FUN-MODEL-SELECT, STK-CONFIG
  */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronDown } from 'lucide-react';
+import config from '../config';
 
-const API_BASE = 'http://172.31.243.212:8000/api';
+// STK-CONFIG-015: Configuration values replace hardcoded URLs
+const API_BASE = config.apiBase;
 
 function ModelSelector({ selectedModel, onSelectModel, disabled }) {
   const [models, setModels] = useState({ base: [], lora: [], merged: [] });

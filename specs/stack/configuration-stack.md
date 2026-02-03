@@ -1,7 +1,8 @@
 ---
 id: STK-CONFIG
-status: draft
+status: implemented
 created: 2026-02-03
+implemented: 2026-02-03T21:04:02Z
 prompt_version: user-request
 ---
 
@@ -164,24 +165,24 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ## Acceptance Criteria
 
-- [ ] STK-CONFIG-001: Backend uses `.env` file in project root for configuration loading
-- [ ] STK-CONFIG-002: Backend uses `pydantic-settings` for type-safe configuration validation
-- [ ] STK-CONFIG-003: Backend configuration class defines all required fields (host, port, CORS origins, ComfyUI URL, storage path)
-- [ ] STK-CONFIG-004: Backend fails to start with clear error message if required configuration missing
-- [ ] STK-CONFIG-005: Frontend uses `.env` file with `VITE_` prefix for configuration variables
-- [ ] STK-CONFIG-006: Frontend accesses configuration via `import.meta.env.VITE_*` syntax
-- [ ] STK-CONFIG-007: `.env` file is listed in `.gitignore` to prevent accidental commit
-- [ ] STK-CONFIG-008: `.env.example` file is committed to repository showing required configuration keys
-- [ ] STK-CONFIG-009: Backend logs loaded configuration source (file path) at startup
-- [ ] STK-CONFIG-010: Frontend provides fallback default for `VITE_API_BASE_URL` if not set
-- [ ] STK-CONFIG-011: CORS origins configuration accepts comma-separated list of URLs
-- [ ] STK-CONFIG-012: Configuration values replace all hardcoded URLs in `backend/main.py`
-- [ ] STK-CONFIG-013: Configuration values replace all hardcoded URLs in `backend/app/services/comfyui.py`
-- [ ] STK-CONFIG-014: Configuration values replace all hardcoded URLs in `backend/app/api/gallery.py`
-- [ ] STK-CONFIG-015: Configuration values replace all hardcoded URLs in frontend components (GenerationForm, Gallery, ImageModal, GalleryPage)
-- [ ] STK-CONFIG-016: Documentation explains how to update `.env` for different environments
-- [ ] STK-CONFIG-017: `python-dotenv` version 1.0.0+ added to `backend/requirements.txt`
-- [ ] STK-CONFIG-018: `pydantic-settings` version 2.0.0+ added to `backend/requirements.txt`
+- [x] STK-CONFIG-001: Backend uses `.env` file in project root for configuration loading
+- [x] STK-CONFIG-002: Backend uses `pydantic-settings` for type-safe configuration validation
+- [x] STK-CONFIG-003: Backend configuration class defines all required fields (host, port, CORS origins, ComfyUI URL, storage path)
+- [x] STK-CONFIG-004: Backend fails to start with clear error message if required configuration missing
+- [x] STK-CONFIG-005: Frontend uses `.env` file with `VITE_` prefix for configuration variables
+- [x] STK-CONFIG-006: Frontend accesses configuration via `import.meta.env.VITE_*` syntax
+- [x] STK-CONFIG-007: `.env` file is listed in `.gitignore` to prevent accidental commit
+- [x] STK-CONFIG-008: `.env.example` file is committed to repository showing required configuration keys
+- [x] STK-CONFIG-009: Backend logs loaded configuration source (file path) at startup
+- [x] STK-CONFIG-010: Frontend provides fallback default for `VITE_API_BASE_URL` if not set
+- [x] STK-CONFIG-011: CORS origins configuration accepts comma-separated list of URLs
+- [x] STK-CONFIG-012: Configuration values replace all hardcoded URLs in `backend/main.py`
+- [x] STK-CONFIG-013: Configuration values replace all hardcoded URLs in `backend/app/services/comfyui.py`
+- [x] STK-CONFIG-014: Configuration values replace all hardcoded URLs in `backend/app/api/gallery.py`
+- [x] STK-CONFIG-015: Configuration values replace all hardcoded URLs in frontend components (GenerationForm, Gallery, ImageModal, GalleryPage)
+- [x] STK-CONFIG-016: Documentation explains how to update `.env` for different environments
+- [x] STK-CONFIG-017: `python-dotenv` version 1.0.0+ added to `backend/requirements.txt`
+- [x] STK-CONFIG-018: `pydantic-settings` version 2.0.0+ added to `backend/requirements.txt`
 
 ---
 

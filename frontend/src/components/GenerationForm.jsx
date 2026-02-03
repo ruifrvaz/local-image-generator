@@ -1,14 +1,16 @@
 /**
  * Generation Form Component
- * Traceability: FUN-GEN-REQUEST
+ * Traceability: FUN-GEN-REQUEST, STK-CONFIG
  */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ModelSelector from './ModelSelector';
 import GeneratedImage from './GeneratedImage';
 import { Loader2 } from 'lucide-react';
+import config from '../config';
 
-const API_BASE = 'http://172.31.243.212:8000/api';
+// STK-CONFIG-015: Configuration values replace hardcoded URLs
+const API_BASE = config.apiBase;
 
 // FUN-GEN-REQUEST-002: Generation states
 const STATE = {
