@@ -1,11 +1,13 @@
 /**
  * Image Modal Component
- * Traceability: FUN-GALLERY-VIEW-021
+ * Traceability: FUN-GALLERY-VIEW-021, STK-CONFIG
  */
 import { X, Download, Trash2 } from 'lucide-react';
+import config from '../config';
 
 function ImageModal({ image, onClose, onDelete }) {
-  const imageUrl = `http://172.31.243.212:8000${image.image_url}`;
+  // STK-CONFIG-015: Configuration values replace hardcoded URLs
+  const imageUrl = `${config.apiBaseUrl}${image.image_url}`;
 
   const handleDelete = () => {
     if (confirm('Delete this image permanently?')) {

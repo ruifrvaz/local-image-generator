@@ -54,6 +54,66 @@ cd ~/image-gen/models
 wget https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
 ```
 
+### 4. Configure Environment
+
+Create a `.env` file in the project root:
+
+```bash
+cp .env.example .env
+```
+
+**Required Configuration:**
+
+Edit `.env` and update the following values:
+
+```bash
+# Backend Configuration
+BACKEND_HOST=0.0.0.0
+BACKEND_PORT=8000
+
+# Frontend CORS origins (comma-separated)
+# Update WSL IP to match your system (run: hostname -I)
+CORS_ORIGINS=http://localhost:5173,http://172.31.243.212:5173
+
+# ComfyUI API URL
+COMFYUI_API_URL=http://localhost:8188
+
+# Gallery storage path for generated images
+GALLERY_STORAGE_PATH=/home/user/images/outputs
+
+# Frontend Configuration
+# Must match one of the CORS_ORIGINS values
+VITE_API_BASE_URL=http://172.31.243.212:8000
+```
+
+**Finding Your WSL IP Address:**
+
+```bash
+hostname -I  # First address is your WSL IP
+```
+
+Update all occurrences of `172.31.243.212` in `.env` with your actual WSL IP.
+
+**Alternative (Port Forwarding):**
+
+If you have WSL port forwarding configured, you can use localhost everywhere:
+
+```bash
+CORS_ORIGINS=http://localhost:5173
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+**Environment Variables Reference:**
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `BACKEND_HOST` | No | `0.0.0.0` | Backend server host |
+| `BACKEND_PORT` | No | `8000` | Backend server port |
+| `CORS_ORIGINS` | Yes | - | Comma-separated frontend URLs |
+| `COMFYUI_API_URL` | Yes | - | ComfyUI server URL |
+| `GALLERY_STORAGE_PATH` | Yes | - | Path to save images |
+| `VITE_API_BASE_URL` | Yes | - | Backend URL for frontend |
+
 ## Daily Usage
 
 ### Web Frontend (Recommended)

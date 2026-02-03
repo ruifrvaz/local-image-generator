@@ -1,11 +1,19 @@
 """
 FastAPI Backend for Image Generation Frontend
 Integrates with ComfyUI for image generation
-Traceability: STK-BACKEND, FUN-GEN-REQUEST, FUN-GALLERY-VIEW
+Traceability: STK-BACKEND, FUN-GEN-REQUEST, FUN-GALLERY-VIEW, STK-CONFIG
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import generation, gallery, models
+from app.config import settings
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 app = FastAPI(
     title="Image Generation API",
@@ -14,12 +22,10 @@ app = FastAPI(
 )
 
 # STK-INTEGRATION-005: CORS middleware for frontend origin
+# STK-CONFIG-012: Configuration values replace hardcoded URLs
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # Frontend dev server (localhost)
-        "http://172.31.243.212:5173",  # Frontend dev server (WSL IP)
-    ],
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],

@@ -1,14 +1,16 @@
 /**
  * Gallery Page - Browse Generated Images
- * Traceability: FUN-GALLERY-VIEW
+ * Traceability: FUN-GALLERY-VIEW, STK-CONFIG
  */
 import { useState, useEffect } from 'react';
 import Gallery from '../components/Gallery';
 import GalleryFilters from '../components/GalleryFilters';
 import GalleryStatistics from '../components/GalleryStatistics';
 import axios from 'axios';
+import config from '../config';
 
-const API_BASE = 'http://172.31.243.212:8000/api';
+// STK-CONFIG-015: Configuration values replace hardcoded URLs
+const API_BASE = config.apiBase;
 
 function GalleryPage() {
   const [images, setImages] = useState([]);

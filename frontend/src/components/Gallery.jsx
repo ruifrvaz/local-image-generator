@@ -1,10 +1,11 @@
 /**
  * Gallery Grid Component
- * Traceability: FUN-GALLERY-VIEW
+ * Traceability: FUN-GALLERY-VIEW, STK-CONFIG
  */
 import { useState } from 'react';
 import { Trash2, Eye } from 'lucide-react';
 import ImageModal from './ImageModal';
+import config from '../config';
 
 function Gallery({ images, loading, onDeleteImage }) {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -37,9 +38,10 @@ function Gallery({ images, loading, onDeleteImage }) {
             className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
           >
             {/* FUN-GALLERY-VIEW-004: Thumbnail display */}
+            {/* STK-CONFIG-015: Configuration values replace hardcoded URLs */}
             <div className="relative group">
               <img
-                src={`http://172.31.243.212:8000${image.thumbnail_url}`}
+                src={`${config.apiBaseUrl}${image.thumbnail_url}`}
                 alt={image.prompt.substring(0, 50)}
                 className="w-full h-64 object-cover rounded-t-lg cursor-pointer"
                 onClick={() => setSelectedImage(image)}

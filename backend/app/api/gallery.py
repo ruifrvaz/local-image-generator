@@ -1,10 +1,11 @@
 """
 Gallery API Endpoints
-Traceability: FUN-GALLERY-VIEW
+Traceability: FUN-GALLERY-VIEW, STK-CONFIG
 """
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 from app.models.schemas import GalleryImage, GalleryFilter, GalleryStatistics
+from app.config import settings
 from typing import List
 import os
 from pathlib import Path
@@ -13,7 +14,8 @@ import json
 
 router = APIRouter()
 
-GALLERY_PATH = Path.home() / "images" / "outputs"
+# STK-CONFIG-014: Configuration values replace hardcoded paths
+GALLERY_PATH = Path(settings.gallery_storage_path)
 
 @router.get("/gallery", response_model=List[GalleryImage])
 async def load_gallery(

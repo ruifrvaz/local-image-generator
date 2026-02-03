@@ -1,11 +1,21 @@
-# Model files
-models/
+# Model files (ML models, not Python code)
+models/*.safetensors
+models/*.ckpt
+models/*.pt
+models/*.pth
+!backend/app/models/
 
 # Server logs
 logs/
 
 # Session history (personal development notes)
 docs/history/
+
+# Environment configuration
+# STK-CONFIG-007: .env files excluded from version control
+.env
+.env.local
+.env.*.local
 
 # Python
 __pycache__/
