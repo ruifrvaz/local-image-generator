@@ -43,6 +43,13 @@ This prompt captures functional requirements for your project. These requirement
 
 ### Behaviors
 
+**Configuration Management:**
+- System loads environment-specific configuration at startup (URLs, ports, paths)
+- System validates all required configuration values are present
+- System fails with clear error if configuration missing or invalid
+- Configuration values replace all hardcoded constants in source code
+- Different deployment environments use different configuration sources
+
 **Generation Request Processing:**
 - Parse user input: prompt, generation type, model, parameters
 - Validate inputs: prompt length, parameter ranges, model existence
@@ -147,6 +154,13 @@ This prompt captures functional requirements for your project. These requirement
 - model: text (optional)
 - sortBy: enum (timestamp, model, prompt)
 - sortOrder: enum (asc, desc)
+
+**Configuration:**
+- backendUrl: URL (where backend API is accessible)
+- frontendOrigin: URL (where frontend is served)
+- comfyuiUrl: URL (ComfyUI server address)
+- galleryStoragePath: filesystem path (persistent image storage)
+- requiredKeys: array of text (keys that must be present)
 
 **GenerationStatus:**
 - requestId: unique identifier

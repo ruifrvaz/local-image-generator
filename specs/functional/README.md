@@ -17,6 +17,7 @@ Functional specifications define the behavioral requirements, data models, API c
 | FUN-SEQUENCE-GEN | Sequence Generation Workflow | `sequence-generation-workflow.md` | 📋 Draft | BUS-FRONTEND-UI-015, 016, 017, 018, 019, 020 | 35 criteria |
 | FUN-BATCH-GEN | Batch Generation Workflow | `batch-generation-workflow.md` | 📋 Draft | BUS-FRONTEND-UI-021, 022, 023 | 30 criteria |
 | FUN-MODEL-SELECT | Model Selection Interface | `model-selection-interface.md` | 📋 Draft | BUS-FRONTEND-UI-004, BUS-MODEL-MGMT | 26 criteria (1 untestable) |
+| FUN-CONFIG | Configuration Management | `configuration-management.md` | 📋 Draft | BUS-FRONTEND-UI, BUS-SINGLE-IMAGE, BUS-SERVER-MGMT | 10 criteria |
 
 **Total:** 5 functional specifications, 151 acceptance criteria (150 testable, 1 flagged as untestable)
 

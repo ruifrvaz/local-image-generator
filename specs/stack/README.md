@@ -16,8 +16,9 @@ Stack specifications define the technology choices, versions, libraries, and bui
 | STK-FRONTEND | Frontend Technology Stack | `frontend-stack.md` | Foundation | FUN-GEN-REQUEST, FUN-GALLERY-VIEW, FUN-SEQUENCE-GEN, FUN-BATCH-GEN, FUN-MODEL-SELECT | 30 criteria |
 | STK-BACKEND | Backend API Technology Stack | `backend-api-stack.md` | Feature | FUN-GEN-REQUEST, FUN-GALLERY-VIEW, FUN-SEQUENCE-GEN, FUN-BATCH-GEN, FUN-MODEL-SELECT | 30 criteria |
 | STK-INTEGRATION | Integration Layer Stack | `integration-layer-stack.md` | Feature | Multiple functional specs | 35 criteria |
+| STK-CONFIG | Configuration Management Stack | `configuration-stack.md` | Feature | FUN-CONFIG | 18 criteria |
 
-**Total:** 4 stack specifications, 110 acceptance criteria (all testable)
+**Total:** 5 stack specifications, 128 acceptance criteria (all testable)
 
 ## Specification Types
 
